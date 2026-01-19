@@ -10,10 +10,10 @@ This is an open research tool that is not intended for clinical purposes.
 * M.J. (Mariëlle) Stam   -   Amsterdam UMC, Amsterdam, The Netherlands
 
 ### GitHub repository:
-https://github.com/bjkeulen/ALFA-toolbox
+https://github.com/Data-Driven-Brain-Stimulation/ALFA-toolbox
 
 ### Please cite this article when using our toolbox:
-Keulen BJ et al. Amsterdam Local Field Potential Analysis (ALFA) toolbox: A Comprehensive and Versatile Tool for Processing and Visualizing Local Field Potential Data. 
+Manuscript in preparation.
 
 ## Outline
 ### Main scripts
