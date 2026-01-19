@@ -301,7 +301,7 @@ function plotStreaming(dataRec, nRuns, ecgMethod, savepath, savename, showFig)
         dataMask = dataRec.Data.LfpPower.Value(dataRec.Data.LfpPower.Value <= mean(dataRec.Data.LfpPower.Value,'all','omitnan') + 5*std(dataRec.Data.LfpPower.Value,[],'all','omitnan'));
         ylim([0 1.1*max(dataMask,[],'all')])
         xlim([0 max(dataRec.Data.LfpPower.Time)])
-        ylabel('LFP power [LSB]','FontSize',12)
+        ylabel('LFP power [a.u.]','FontSize',12)
 
         if ~strcmp(dataRec.Settings.AdaptiveStatus{iInfo(h)},'NOT_CONFIGURED')
             yline(dataRec.Settings.LowerLfpThreshold(:,iInfo(h)),'LineStyle','-.','LineWidth',1.5,'Color',colors(3,:))

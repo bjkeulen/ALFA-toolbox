@@ -112,7 +112,7 @@ function plotTimeline(dataTimeline, savepath, savename, showFig)
         plot(dataTimeline.Data.DateTime, dataTimeline.Data.LfpPower(:,i),'Color',colors(1,:))
         plot(dataTimeline.Data.DateTime, dataTimeline.Data.LowerLfpThreshold(:,i),'LineStyle','--','LineWidth',1.5,'Color',colors(3,:))
         plot(dataTimeline.Data.DateTime, dataTimeline.Data.UpperLfpThreshold(:,i),'LineStyle','--','LineWidth',1.5,'Color',colors(3,:))
-        ylabel('LFP power','FontSize',12)
+        ylabel('LFP power [a.u.]','FontSize',12)
         ylim([0 ymax(2)]);
 
         % Plot changes in channel or frequency
