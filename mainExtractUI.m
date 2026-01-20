@@ -51,7 +51,7 @@ for f = 1:fileData.nfolders
 
     % Get files within directory in case of folderset processing
     if settings.dataset == 2
-        fileData.files = dir([fileData.rootPath '\' fileData.folders(f).name '\**\*.json']);
+        fileData.files = dir([fileData.rootPath filesep fileData.folders(f).name filesep '**' filesep '*.json']);
         if isempty(fileData.files)
             continue
         else

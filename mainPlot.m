@@ -50,7 +50,7 @@ end
 
 % Get single .json file of patient
 if folder == 0
-    [file, rootFolder] = uigetfile('L:\Basic\divd\knf\Onderzoek_projecten\AI_DBS\Analyse\ALFA toolbox\Testdata\*.mat');
+    [file, rootFolder] = uigetfile('*.mat', 'Select a single MAT file');
 
     if ischar(file) && ischar(rootFolder)
         files = {};
@@ -63,14 +63,14 @@ if folder == 0
 
 % Get folder and all .json files within folder
 else
-    rootFolder = uigetdir('L:\Basic\divd\knf\Onderzoek_projecten\AI_DBS\Analyse\ALFA toolbox\Testdata');
+    rootFolder = uigetdir('', 'Select a folder containing MAT files');
 
     if ischar(rootFolder)
-        files = dir([rootFolder '\**\*.mat']);
+        files = dir([rootFolder filesep '**' filesep '*.mat']);
 
         % Check if files are found, remove duplicates if applicable
         if isempty(files)
-            error('No files found in selected folder. Select a folder containing .mat files.')
+            error('No files found in selected folder. Select a folder containing MAT files.')
         elseif length(files) > 1
             fileTable = struct2table(files);
             [~,idx,~] = unique(fileTable.name);
