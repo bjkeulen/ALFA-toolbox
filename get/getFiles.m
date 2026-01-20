@@ -51,7 +51,7 @@ function [fileData, savepath] = getFiles(dataset)
         fileData.rootPath = uigetdir('','Select a folder');
     
         if ischar(fileData.rootPath)
-            fileData.files = dir([fileData.rootPath '\**\*.json']);
+            fileData.files = dir([fileData.rootPath filesep '**' filesep '*.json']);
     
             % Check if files are found, remove duplicates if applicable
             if isempty(fileData.files)
@@ -88,7 +88,7 @@ function [fileData, savepath] = getFiles(dataset)
             else
                 filecount = [];
                 for c = 1:length(fileData.folders)
-                    filecount = [filecount; dir([fileData.rootPath filesep fileData.folders(c).name '\**\*.json'])];
+                    filecount = [filecount; dir([fileData.rootPath filesep fileData.folders(c).name filesep '**' filesep '*.json'])];
                 end
     
                 if isempty(filecount)
