@@ -48,7 +48,7 @@ function [fileData, savepath] = getFiles(dataset)
     
     % Get folder and all .json files within folder
     elseif dataset == 1
-        fileData.rootPath = uigetdir('','Select a folder');
+        fileData.rootPath = uigetdir('', 'Select a folder containing JSON files');
     
         if ischar(fileData.rootPath)
             fileData.files = dir([fileData.rootPath filesep '**' filesep '*.json']);
@@ -74,7 +74,7 @@ function [fileData, savepath] = getFiles(dataset)
     
     % Get folder and subfolders
     elseif dataset == 2
-        fileData.rootPath = uigetdir('', 'Select a folderset');
+        fileData.rootPath = uigetdir('', 'Select a folder containing subfolders with JSON files');
     
         if ischar(fileData.rootPath)
             fileData.folders = dir(fileData.rootPath);
