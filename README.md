@@ -59,4 +59,4 @@ The datafiles given as output are saved as follows:
 * folder: [name of folder]_[datatype]
 * folderset: [datatype]/[name of folder within folderset]_[datatype]
 
-With datatype being Streaming, Setup, Survey, Identifier, Timeline or Events.
+With datatype being Setup, Survey, Identifier, Streaming, Timeline or Events.
