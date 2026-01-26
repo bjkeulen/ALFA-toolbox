@@ -35,10 +35,10 @@
 %                       Streaming time array, and LFP data in raw, notch, 
 %                       ECG and notch + ECG filtered form
 
-function dataRec = filterECGfull(info, dataRec, rWindow, savenameJSON, c)
+function dataRec = filterECGfull(dataRec, rWindow, savepath, savenameJSON, c)
 
     % Location of folder where all figures are saved:
-    savepathfig = [info.OriginalFolder filesep savenameJSON '_unpacked' filesep 'Figures' filesep 'CleaningFigures'];
+    savepathfig = [savepath filesep 'Figures' filesep 'CleaningFigures'];
     if ~exist(savepathfig, 'dir')
         mkdir(savepathfig)
     end
