@@ -35,10 +35,10 @@
 %                       Streaming time array, and LFP data in raw, notch, 
 %                       ECG and notch + ECG filtered form
 
-function dataRec = filterECGfull(info, dataRec, rWindow, savename_json, c)
+function dataRec = filterECGfull(info, dataRec, rWindow, savenameJSON, c)
 
     % Location of folder where all figures are saved:
-    savepathfig = [info.OriginalFolder [savename_json '_unpacked'] filesep 'Figures' filesep 'CleaningFigures'];
+    savepathfig = [info.OriginalFolder filesep savenameJSON '_unpacked' filesep 'Figures' filesep 'CleaningFigures'];
     if ~exist(savepathfig, 'dir')
         mkdir(savepathfig)
     end
@@ -164,7 +164,7 @@ function dataRec = filterECGfull(info, dataRec, rWindow, savename_json, c)
             % Plot LFP signal and detected R-peaks
             fig = figure('Name','Detected R-peaks and PSD','NumberTitle','off', 'visible', 'off');clf();
             fig.WindowState = 'maximized';
-            sgtitle([savename_json ' LFP_L Raw - Recording ' num2str(c)'], 'Interpreter', 'none')
+            sgtitle([savenameJSON ' LFP_L Raw - Recording ' num2str(c)'], 'Interpreter', 'none')
             subplot(2,s,1:s)
             plot(time,LFPnorm_left,  'k'), hold on,plot(time(locs_Rwave_left), LFPnorm_left(locs_Rwave_left),'r*', 'markersize', 15)
             xlabel('Time [s]', 'FontSize',12)
@@ -205,8 +205,8 @@ function dataRec = filterECGfull(info, dataRec, rWindow, savename_json, c)
             end
     
             fig.Visible = 'on';
-            savefig([savepathfig filesep [savename_json '_LFP_L_raw_rec' num2str(c) '_PSD_precleaning.fig']])
-            print(gcf,'-djpeg', [savepathfig filesep [savename_json '_LFP_L_raw_rec' num2str(c) '_PSD_precleaning.jpg']]);
+            savefig(fig, [savepathfig filesep [savenameJSON '_LFP_L_raw_rec' num2str(c) '_precleaning.fig']])
+            print(fig, '-djpeg', [savepathfig filesep [savenameJSON '_LFP_L_raw_rec' num2str(c) '_precleaning.jpg']]);
     
             key=input('Inspect detected R-peaks and PSDs of LFP-Left: Press "y" to apply ECG cleaning, press "n" to proceed without ECG cleaning:','s');
     
@@ -254,8 +254,8 @@ function dataRec = filterECGfull(info, dataRec, rWindow, savename_json, c)
 
             % Location and name to save figures:
             settings.Folder                 = savepathfig;
-            settings.Label                  = [savename_json '_LFP_L_raw_rec' num2str(c)];
-            settings.Title                  = [savename_json ' LFP_L Raw - Recording ' num2str(c)];
+            settings.Label                  = [savenameJSON '_LFP_L_raw_rec' num2str(c)];
+            settings.Title                  = [savenameJSON ' LFP_L Raw - Recording ' num2str(c)];
     
             % Apply the SVD ECG suppression method to LFP_L and save filtered signal in LFP_Ecg:
             [dataRec.Data.LFP_Ecg(:,chL), settings.ProjOut, settings.FinalComp, locs_Rwave_left_final] = SVD_ECG_Filter(dataRec.Data.LFP(:,chL),settings,[],locs_Rwave_left,[]);
@@ -337,7 +337,7 @@ function dataRec = filterECGfull(info, dataRec, rWindow, savename_json, c)
             % Plot LFP signal and detected R-peaks
             fig = figure('Name','Detected R-peaks and PSD','NumberTitle','off', 'visible', 'off');clf();
             fig.WindowState = 'maximized';
-            sgtitle([savename_json ' LFP_R Raw - Recording ' num2str(c)'], 'Interpreter', 'none')
+            sgtitle([savenameJSON ' LFP_R Raw - Recording ' num2str(c)'], 'Interpreter', 'none')
             subplot(2,s,1:s)
             plot(time,LFPnorm_right,  'k'), hold on,plot(time(locs_Rwave_right), LFPnorm_right(locs_Rwave_right),'r*', 'markersize', 15)
             xlabel('Time [s]', 'FontSize',12)
@@ -379,8 +379,8 @@ function dataRec = filterECGfull(info, dataRec, rWindow, savename_json, c)
             end
     
             fig.Visible = 'on';
-            savefig([savepathfig filesep [savename_json '_LFP_R_raw_rec' num2str(c) '_PSD_precleaning.fig']])
-            print(gcf,'-djpeg', [savepathfig filesep [savename_json '_LFP_R_raw_rec' num2str(c) '_PSD_precleaning.jpg']]);
+            savefig(fig, [savepathfig filesep [savenameJSON '_LFP_R_raw_rec' num2str(c) '_precleaning.fig']])
+            print(fig, '-djpeg', [savepathfig filesep [savenameJSON '_LFP_R_raw_rec' num2str(c) '_precleaning.jpg']]);
             
             key=input('Inspect detected R-peaks and PSDs of LFP-Right: Press "y" to apply ECG cleaning, press "n" to proceed without ECG cleaning:','s');
         end
@@ -427,8 +427,8 @@ function dataRec = filterECGfull(info, dataRec, rWindow, savename_json, c)
 
             % Location and name to save figures:
             settings.Folder                 = savepathfig;
-            settings.Label                  = [savename_json '_LFP_R_raw_rec' num2str(c)];
-            settings.Title                  = [savename_json ' LFP_R Raw - Recording ' num2str(c)];
+            settings.Label                  = [savenameJSON '_LFP_R_raw_rec' num2str(c)];
+            settings.Title                  = [savenameJSON ' LFP_R Raw - Recording ' num2str(c)];
     
             % Apply the SVD ECG suppression method to LFP_R and save filtered signal in LFP_Ecg:
             [dataRec.Data.LFP_Ecg(:,chR), settings.ProjOut, settings.FinalComp, locs_Rwave_right_final] = SVD_ECG_Filter(dataRec.Data.LFP(:,chR),settings,[],locs_Rwave_right,[]);
@@ -502,7 +502,7 @@ function dataRec = filterECGfull(info, dataRec, rWindow, savename_json, c)
             % Plot LFP signal and detected R-peaks
             fig = figure('Name','Detected R-peaks and PSD','NumberTitle','off', 'visible', 'off');clf();
             fig.WindowState = 'maximized';
-            sgtitle([savename_json ' LFP_L - Linenoise filtered - Recording ' num2str(c)'], 'Interpreter', 'none')
+            sgtitle([savenameJSON ' LFP_L - Linenoise filtered - Recording ' num2str(c)'], 'Interpreter', 'none')
             subplot(2,s,1:s)
             plot(time,LFPnorm_left,  'k'), hold on,plot(time(locs_Rwave_left), LFPnorm_left(locs_Rwave_left),'r*', 'markersize', 15)
             xlabel('Time [s]', 'FontSize',12)
@@ -544,8 +544,8 @@ function dataRec = filterECGfull(info, dataRec, rWindow, savename_json, c)
             end
     
             fig.Visible = 'on';
-            savefig([savepathfig filesep [savename_json '_LFP_L_linenoise_rec' num2str(c) '_PSD_precleaning.fig']])
-            print(gcf,'-djpeg', [savepathfig filesep [savename_json '_LFP_L_linenoise_rec' num2str(c) '_PSD_precleaning.jpg']]);
+            savefig(fig, [savepathfig filesep [savenameJSON '_LFP_L_linenoise_rec' num2str(c) '_precleaning.fig']])
+            print(fig, '-djpeg', [savepathfig filesep [savenameJSON '_LFP_L_linenoise_rec' num2str(c) '_precleaning.jpg']]);
     
             key=input('Inspect detected R-peaks and PSDs of LFP-Left after Notch: Press "y" to apply ECG cleaning, press "n" to proceed without ECG cleaning:','s');
         end
@@ -592,8 +592,8 @@ function dataRec = filterECGfull(info, dataRec, rWindow, savename_json, c)
 
             % Location and name to save figures:
             settings.Folder                 = savepathfig;
-            settings.Label                  = [savename_json '_LFP_L_linenoise_rec' num2str(c)];
-            settings.Title                  = [savename_json ' LFP_L - Linenoise filtered - Recording ' num2str(c)];
+            settings.Label                  = [savenameJSON '_LFP_L_linenoise_rec' num2str(c)];
+            settings.Title                  = [savenameJSON ' LFP_L - Linenoise filtered - Recording ' num2str(c)];
     
             % If SVD ECG suppression is applied to raw LFPs, display which
             % (number of) components are chosen for ECG suppression:
@@ -654,7 +654,7 @@ function dataRec = filterECGfull(info, dataRec, rWindow, savename_json, c)
             % Plot LFP signal and detected R-peaks
             fig = figure('Name','Detected R-peaks and PSD','NumberTitle','off', 'Visible','off');clf();
             fig.WindowState = 'maximized';
-            sgtitle([savename_json ' LFP_R - Linenoise filtered - Recording ' num2str(c)'], 'Interpreter', 'none')
+            sgtitle([savenameJSON ' LFP_R - Linenoise filtered - Recording ' num2str(c)'], 'Interpreter', 'none')
             subplot(2,s,1:s)
             plot(time,LFPnorm_right,  'k'), hold on,plot(time(locs_Rwave_right), LFPnorm_right(locs_Rwave_right),'r*', 'markersize', 15)
             xlabel('Time [s]', 'FontSize',12)
@@ -695,8 +695,8 @@ function dataRec = filterECGfull(info, dataRec, rWindow, savename_json, c)
             end
     
             fig.Visible = 'on';
-            savefig([savepathfig filesep [savename_json '_LFP_R_linenoise_rec' num2str(c) '_PSD_precleaning.fig']])
-            print(gcf,'-djpeg', [savepathfig filesep [savename_json '_LFP_R_linenoise_rec' num2str(c) '_PSD_precleaning.jpg']]);
+            savefig(fig, [savepathfig filesep [savenameJSON '_LFP_R_linenoise_rec' num2str(c) '_precleaning.fig']])
+            print(fig,'-djpeg', [savepathfig filesep [savenameJSON '_LFP_R_linenoise_rec' num2str(c) '_precleaning.jpg']]);
     
             key=input('Inspect detected R-peaks and PSDs of LFP-Right after Notch: Press "y" to apply ECG cleaning, press "n" to proceed without ECG cleaning:','s');
     
@@ -743,8 +743,8 @@ function dataRec = filterECGfull(info, dataRec, rWindow, savename_json, c)
 
             % Location and name to save figures:
             settings.Folder                 = savepathfig;
-            settings.Label                  = [savename_json '_LFP_R_Linenoise_rec' num2str(c)];
-            settings.Title                  = [savename_json ' LFP_R - Linenoise filtered - Recording ' num2str(c)];
+            settings.Label                  = [savenameJSON '_LFP_R_Linenoise_rec' num2str(c)];
+            settings.Title                  = [savenameJSON ' LFP_R - Linenoise filtered - Recording ' num2str(c)];
     
             % If SVD ECG suppression is applied to raw LFPs, display which
             % (number of) components are chosen for ECG suppression:
