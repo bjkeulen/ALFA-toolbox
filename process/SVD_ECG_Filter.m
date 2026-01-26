@@ -219,7 +219,7 @@ function [sigout, proj_out, finalcomp, ecg_peak_indices] = SVD_ECG_Filter(sigin,
         % Loop over zoomed-in epochs to (de)select R-peaks manually:
         if key == 'y'
             figure('Name','Manual (de)select R-peaks','NumberTitle','off')
-            fh = findobj( 'Type', 'Figure', 'Name', 'Manual (de)select R-peaks' );clf(fh);
+            fh = findobj( 'Type', 'Figure', 'Name', 'Manual (de)select R-peaks' ); clf(fh);
             if locs_Rwave == 1
                 l_epoch = 10000;
             else
@@ -229,7 +229,7 @@ function [sigout, proj_out, finalcomp, ecg_peak_indices] = SVD_ECG_Filter(sigin,
             nint=length(LFPnorm)/(l_epoch);
             j = 1;
             while j < nint+1
-                figure(fh,'WindowState','maximized')
+                fh.WindowState = 'maximized';
                 plot(LFPnorm,'k'),hold on,plot(locs_Rwave, LFPnorm(locs_Rwave),'r*')
                 xlim([(j-1)*l_epoch j*l_epoch])
                 checkpeaks=1;
@@ -243,12 +243,12 @@ function [sigout, proj_out, finalcomp, ecg_peak_indices] = SVD_ECG_Filter(sigin,
                     end
 
                     plot(LFPnorm, 'k'),hold on,plot(locs_Rwave, LFPnorm(locs_Rwave),'r*')
-                    title('Press "r" to remove a peak, "a" to add a peak, and any other key to continue');
+                    title({['Epoch ' num2str(j) '/' num2str(ceil(nint))]; 'Press "r" to remove a peak, "a" to add a peak, "b" to go back one epoch, "f" to skip this step';'Press any other key to continue to next epoch'});
                     xlim([(j-1)*l_epoch j*l_epoch])
                     xlabel('Samples', 'FontSize', 12)
                     box off
 
-                    key=input('Press "r" to remove a peak, "a" to add a peak, and any other key to continue:','s');
+                    key=input('Press "r" to remove a peak, "a" to add a peak, "b" to go back one epoch, "f" to skip this step.\nPress any other key to continue to next epoch:','s');
                     if key=='r' % remove peak on click
                         [X,~] = ginput(1);
                         [~,ix] = min(abs(locs_Rwave-X));
@@ -278,14 +278,14 @@ function [sigout, proj_out, finalcomp, ecg_peak_indices] = SVD_ECG_Filter(sigin,
                         j = j - 1;
                     elseif key == 'f' % finish interactive
                         j = nint+1;
-                    elseif key == 'x'
-                        j = j + 10;
-                    elseif key=='t'
-                        j = j - 10;
-                    elseif key == 'c'
-                        j = j + 100;
-                    elseif key == 'h'
-                        j = j - 100;
+                    % elseif key == 'x'
+                    %     j = j + 10;
+                    % elseif key=='t'
+                    %     j = j - 10;
+                    % elseif key == 'c'
+                    %     j = j + 100;
+                    % elseif key == 'h'
+                    %     j = j - 100;
                     else
                         checkpeaks=0; % done with this epoch, go to the next
                         j = j + 1;
@@ -367,8 +367,8 @@ function [sigout, proj_out, finalcomp, ecg_peak_indices] = SVD_ECG_Filter(sigin,
             title('Final R-peaks used for SVD', 'FontSize', 14)
             box off
             if savefigs
-                print(gcf,'-djpeg',[settings.Folder,'\',[label,'_detected_R_peaks.jpg']]);
-                savefig([settings.Folder,'\',[label,'_detected_R_peaks']]);
+                print(gcf,'-djpeg',[settings.Folder,filesep,[label,'_detected_R_peaks.jpg']]);
+                savefig([settings.Folder,filesep,[label,'_detected_R_peaks']]);
             end
         end
 
@@ -445,8 +445,8 @@ function [sigout, proj_out, finalcomp, ecg_peak_indices] = SVD_ECG_Filter(sigin,
     
         if showfigs
             if savefigs
-                saveas(fig, [settings.Folder,'\',[label,'_SVD_components.jpg']]);
-                saveas(fig, [settings.Folder,'\',[label,'_SVD_components.fig']]);
+                saveas(fig, [settings.Folder,filesep,[label,'_SVD_components.jpg']]);
+                saveas(fig, [settings.Folder,filesep,[label,'_SVD_components.fig']]);
             end
             close('Final R-peaks')
             close('SVD components')
@@ -596,8 +596,8 @@ function [sigout, proj_out, finalcomp, ecg_peak_indices] = SVD_ECG_Filter(sigin,
 
             fig.Visible = 'on';
             if savefigs
-                print(gcf,'-djpeg',[settings.Folder,'\',[label,'_PSD_postcleaning_',num2str(ncomp),'comp.jpg']]);
-                savefig([settings.Folder,'\',[label,'_PSD_postcleaning_',num2str(ncomp),'comp']]);
+                savefig(fig, [settings.Folder,filesep,[label,'_postcleaning_',num2str(ncomp),'comp.fig']]);
+                print(fig,'-djpeg',[settings.Folder,filesep,[label,'_postcleaning_',num2str(ncomp),'comp.jpg']]);
             end
         end
     else
