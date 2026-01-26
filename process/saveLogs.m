@@ -61,9 +61,19 @@ function saveLogs(dataLog, dataTimeline, dataEvents, savepath, savename, rootNam
         aggrLog{2,'end'} = dtSE(end);
     end
 
+    % Set savepath for logs and create folder if folderset processing
+    if isempty(rootName)
+        savepathLogs = savepath;
+    else
+        savepathLogs = [savepath filesep 'Logs'];
+        if ~exist(savepathLogs, 'dir')
+           mkdir(savepathLogs)
+        end
+    end
+
     % Save logs
-    writetable(dataLog, [savepath filesep 'log_' savename '.xlsx'], 'Sheet', 'Single JSON')
-    writetable(aggrLog, [savepath filesep 'log_' savename '.xlsx'], 'Sheet', 'Aggregated data')
+    writetable(dataLog, [savepathLogs filesep 'log_' savename '.xlsx'], 'Sheet', 'Single JSON')
+    writetable(aggrLog, [savepathLogs filesep 'log_' savename '.xlsx'], 'Sheet', 'Aggregated data')
 
     % Display results in command window
     types = ["Setup" "Survey" "Identifier" "Streaming" "Timeline" "Events"];
