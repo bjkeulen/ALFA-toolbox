@@ -1,7 +1,7 @@
-% Author: B.J. Keulen & M.J. Stam
+% Author: B.J. Keulen, M.J. Stam & J.T. Boonstra
 % Date: 29-03-2024
 %
-% Copyright 2025 B.J. Keulen and M.J. Stam
+% Copyright 2025 B.J. Keulen, M.J. Stam & J.T. Boonstra
 % SPDX-License-Identifier: Apache-2.0
 %
 % Function for the extraction of BrainSenseTimeDomain Streaming data and
@@ -189,6 +189,8 @@ function dataStreaming = getStreaming(info, js, linenoise, ecgMethod, rTime, sav
             if isfield(BSdata(k).TherapySnapshot.Left, 'StreamingAdaptiveMode')
                 aMode = split(BSdata(k).TherapySnapshot.Left.StreamingAdaptiveMode,'.');
                 settings.AdaptiveMode{1} = aMode{2};
+            end
+            if isfield(BSdata(k).TherapySnapshot.Left, 'AdaptiveTherapyStatus')
                 status = split(BSdata(k).TherapySnapshot.Left.AdaptiveTherapyStatus,'.');
                 settings.AdaptiveStatus{1} = status{2};
             end
@@ -207,6 +209,8 @@ function dataStreaming = getStreaming(info, js, linenoise, ecgMethod, rTime, sav
             if isfield(BSdata(k).TherapySnapshot.Right, 'StreamingAdaptiveMode')
                 aMode = split(BSdata(k).TherapySnapshot.Right.StreamingAdaptiveMode,'.');
                 settings.AdaptiveMode{2} = aMode{2};
+            end
+            if isfield(BSdata(k).TherapySnapshot.Right, 'AdaptiveTherapyStatus')
                 status = split(BSdata(k).TherapySnapshot.Right.AdaptiveTherapyStatus,'.');
                 settings.AdaptiveStatus{2} = status{2};
             end

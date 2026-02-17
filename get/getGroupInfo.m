@@ -1,7 +1,7 @@
-% Author: B.J. Keulen
+% Author: B.J. Keulen & J.T. Boonstra
 % Date: 19-09-2024
 %
-% Copyright 2025 B.J. Keulen and M.J. Stam
+% Copyright 2025 B.J. Keulen, M.J. Stam & J.T. Boonstra
 % SPDX-License-Identifier: Apache-2.0
 %
 % Function for retrieving stimulation and sensing parameters for a given
@@ -109,15 +109,21 @@ function [rate, pulsewidth, chan, freq, ampLower, ampUpper, lfpLower, lfpUpper] 
             % Get left stimulation parameters
             if isfield(group.ProgramSettings,'LeftHemisphere')
                 if isfield(group.ProgramSettings.LeftHemisphere, 'Programs')
-                    pulsewidth(1) = group.ProgramSettings.LeftHemisphere.Programs.PulseWidthInMicroSecond;
-                    if isfield(group.ProgramSettings, 'RateInHertz')
-                        rate(1) = group.ProgramSettings.RateInHertz; 
-                    elseif isfield(group.ProgramSettings.LeftHemisphere.Programs, 'RateInHertz')
-                        rate(1) = group.ProgramSettings.LeftHemisphere.Programs.RateInHertz; 
+                    program = group.ProgramSettings.LeftHemisphere.Programs;
+                    if length(program) > 1
+                        program = program(1);
                     end
-                    if isfield(group.ProgramSettings.LeftHemisphere.Programs, 'LowerLimitInMilliAmps')
-                        ampLower(1) = group.ProgramSettings.LeftHemisphere.Programs.LowerLimitInMilliAmps;
-                        ampUpper(1) = group.ProgramSettings.LeftHemisphere.Programs.UpperLimitInMilliAmps;
+                    if isfield(program, 'PulseWidthInMicroSecond')
+                        pulsewidth(1) = program.PulseWidthInMicroSecond;
+                    end
+                    if isfield(program, 'RateInHertz')
+                        rate(1) = program.RateInHertz;
+                    elseif isfield(group.ProgramSettings, 'RateInHertz')
+                        rate(1) = group.ProgramSettings.RateInHertz; 
+                    end
+                    if isfield(program, 'LowerLimitInMilliAmps')
+                        ampLower(1) = program.LowerLimitInMilliAmps;
+                        ampUpper(1) = program.UpperLimitInMilliAmps;
                     end
                 end
             end
@@ -125,15 +131,21 @@ function [rate, pulsewidth, chan, freq, ampLower, ampUpper, lfpLower, lfpUpper] 
             % Get right stimulation parameters
             if isfield(group.ProgramSettings,'RightHemisphere')
                 if isfield(group.ProgramSettings.RightHemisphere, 'Programs')
-                    pulsewidth(2) = group.ProgramSettings.RightHemisphere.Programs.PulseWidthInMicroSecond;
-                    if isfield(group.ProgramSettings, 'RateInHertz')
-                        rate(2) = group.ProgramSettings.RateInHertz; 
-                    elseif isfield(group.ProgramSettings.RightHemisphere.Programs, 'RateInHertz')
-                        rate(2) = group.ProgramSettings.RightHemisphere.Programs.RateInHertz; 
+                    program = group.ProgramSettings.RightHemisphere.Programs;
+                    if length(program) > 1
+                        program = program(1);
                     end
-                    if isfield(group.ProgramSettings.RightHemisphere.Programs, 'LowerLimitInMilliAmps')
-                        ampLower(2) = group.ProgramSettings.RightHemisphere.Programs.LowerLimitInMilliAmps;
-                        ampUpper(2) = group.ProgramSettings.RightHemisphere.Programs.UpperLimitInMilliAmps;
+                    if isfield(program, 'PulseWidthInMicroSecond')
+                        pulsewidth(2) = program.PulseWidthInMicroSecond;
+                    end
+                    if isfield(program, 'RateInHertz')
+                        rate(2) = program.RateInHertz; 
+                    elseif isfield(group.ProgramSettings, 'RateInHertz')
+                        rate(2) = group.ProgramSettings.RateInHertz; 
+                    end
+                    if isfield(program, 'LowerLimitInMilliAmps')
+                        ampLower(2) = program.LowerLimitInMilliAmps;
+                        ampUpper(2) = program.UpperLimitInMilliAmps;
                     end
                 end   
             end
