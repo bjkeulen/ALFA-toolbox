@@ -83,7 +83,15 @@ function saveLogs(dataLog, dataTimeline, dataEvents, savepath, savename, rootNam
         fprintf('------------------\nProcessing completed of %s in folderset %s\n  Single JSON files:\n', savename, rootName)
     end
     for f = 1:height(dataLog)
-        fprintf('    %s: %s\n', dataLog{f,1}, strjoin(types(logical(dataLog{f,2:end})),', '))
+        if strcmp(dataLog{f,'File_check'}, 'Pass')
+            if sum(dataLog{f,3:end}) == 0
+                fprintf('    %s: No LFP data\n', dataLog{f,'Filename'})
+            else
+                fprintf('    %s: %s\n', dataLog{f,'Filename'}, strjoin(types(logical(dataLog{f,3:end})),', '))
+            end
+        else
+            fprintf('    %s: %s\n', dataLog{f,'Filename'}, dataLog{f,'File_check'})
+        end
     end
     if ~isempty(dataTimeline.Data.LfpPower) || ~isempty([dataEvents.Data.EventName])
         fprintf('  Aggregated data:\n')
