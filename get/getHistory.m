@@ -1,7 +1,7 @@
-% Author: B.J. Keulen
+% Author: B.J. Keulen and J.T. Boonstra
 % Date: 17-02-2025
 %
-% Copyright 2025 B.J. Keulen and M.J. Stam
+% Copyright 2025 B.J. Keulen, M.J. Stam & J.T. Boonstra
 % SPDX-License-Identifier: Apache-2.0
 %
 % Function to retrieve and overview of all sessions and group changes
@@ -140,17 +140,27 @@ function [sessions, changes] = getHistory(dataTimeline)
     % Loop over EventLogs
     for i = 1:height(dataTimeline.Info)
         for e = 1:length(dataTimeline.Info(i).EventLogs)
+            try
+                logsE = dataTimeline.Info(i).EventLogs{e};
+            catch
+                logsE = dataTimeline.Info(i).EventLogs{e};
+            end
 
             % Get ends of sessions
-            if isfield(dataTimeline.Info(i).EventLogs{e},'SessionType')
-                if dataTimeline.Info(i).EventLogs{e}.SessionType == "SessionStateDef.SessionStart"
+            if isfield(logsE,'SessionType')
+                if logsE.SessionType == "SessionStateDef.SessionStart"
                     stop = NaT(1);
                     for b = e:length(dataTimeline.Info(i).EventLogs)
-                        if isfield(dataTimeline.Info(i).EventLogs{b},'SessionType')
-                            if dataTimeline.Info(i).EventLogs{b}.SessionType == "SessionStateDef.SessionEnd"
-                                if ~strcmp(dataTimeline.Info(i).EventLogs{e}.DateTime, dataTimeline.Info(i).EventLogs{b}.DateTime)
-                                    start = datetime(dataTimeline.Info(i).EventLogs{e}.DateTime,'InputFormat','yyyy-MM-dd''T''HH:mm:ss''Z''');
-                                    stop = datetime(dataTimeline.Info(i).EventLogs{b}.DateTime,'InputFormat','yyyy-MM-dd''T''HH:mm:ss''Z''');
+                        try
+                            logsB = dataTimeline.Info(i).EventLogs{b};
+                        catch
+                            logsB = dataTimeline.Info(i).EventLogs{b};
+                        end
+                        if isfield(logsB,'SessionType')
+                            if logsB.SessionType == "SessionStateDef.SessionEnd"
+                                if ~strcmp(logsE.DateTime, logsB.DateTime)
+                                    start = datetime(logsE.DateTime,'InputFormat','yyyy-MM-dd''T''HH:mm:ss''Z''');
+                                    stop = datetime(logsB.DateTime,'InputFormat','yyyy-MM-dd''T''HH:mm:ss''Z''');
                                     break
                                 end
                             end
@@ -163,10 +173,10 @@ function [sessions, changes] = getHistory(dataTimeline)
             end
 
             % Get group changes
-            if isfield(dataTimeline.Info(i).EventLogs{e},'OldGroupId')
-                    if ~any(changes{:,'DateTime'} == datetime(dataTimeline.Info(i).EventLogs{e}.DateTime,'InputFormat','yyyy-MM-dd''T''HH:mm:ss''Z'''))
-                        changes = [changes; {datetime(dataTimeline.Info(i).EventLogs{e}.DateTime,'InputFormat','yyyy-MM-dd''T''HH:mm:ss''Z'''), ...
-                                   dataTimeline.Info(i).EventLogs{e}.OldGroupId(end-6:end), dataTimeline.Info(i).EventLogs{e}.NewGroupId(end-6:end)}];
+            if isfield(logsE,'OldGroupId')
+                    if ~any(changes{:,'DateTime'} == datetime(logsE.DateTime,'InputFormat','yyyy-MM-dd''T''HH:mm:ss''Z'''))
+                        changes = [changes; {datetime(logsE.DateTime,'InputFormat','yyyy-MM-dd''T''HH:mm:ss''Z'''), ...
+                                   logsE.OldGroupId(end-6:end), logsE.NewGroupId(end-6:end)}];
                     end
             end
         end
