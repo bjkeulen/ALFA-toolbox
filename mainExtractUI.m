@@ -69,8 +69,8 @@ for f = 1:fileData.nfolders
     % Get empty output structures for Timeline and Events data
     dataTimeline = getStructures('Timeline', fieldsTL);
     dataEvents = getStructures('Events', fieldsSE);
-    dataLog = table('Size',[fileData.nfiles,7], 'VariableTypes',{'string','int64','int64','int64','int64','int64','int64'}, ...
-                     'VariableNames',{'Filename','Setup_n_runs','Survey_n_runs','Identifier_n_runs','Streaming_n_runs','Timeline_present','Events_present'});
+    dataLog = table('Size',[fileData.nfiles,8], 'VariableTypes',{'string','string','int64','int64','int64','int64','int64','int64'}, ...
+                     'VariableNames',{'Filename','File_check','Setup_n_runs','Survey_n_runs','Identifier_n_runs','Streaming_n_runs','Timeline_present','Events_present'});
 
     %% Loop over files
     for i = 1:fileData.nfiles
@@ -93,8 +93,31 @@ for f = 1:fileData.nfolders
         % Add filename to log
         dataLog{i,"Filename"} = string(filename);
 
-        % Load JSON and collect general info
-        js = jsondecode(fileread([folder filesep filename]));
+        % Load JSON, check format, and collect general info
+        try
+            js = jsondecode(fileread([folder filesep filename]));
+            try
+                datetime(strrep(js.SessionDate(1:end-1),'T',' '));
+            catch
+                warning('Could not parse SessionDate for file: %s', filename);
+                dataLog{i,'File_check'} = "Incorrect format SessionDate";
+                continue
+            end
+            try
+                datetime(strrep(js.SessionEndDate(1:end-1),'T',' '));
+            catch
+                warning('Could not parse SessionEndDate for file: %s', filename);
+                dataLog{i,'File_check'} = "Incorrect format SessionEndDate";
+                dataLog{i,3:end} = -1;
+                continue
+            end
+            dataLog{i,'File_check'} = "Pass";
+        catch
+            warning('Could not load file: %s', filename);
+            dataLog{i,'File_check'} = "Could not load file";
+            dataLog{i,3:end} = -1;
+            continue
+        end
         info = getInfo(folder, filename, js);
         dataTimeline.Info = vertcat(dataTimeline.Info, info);
     
@@ -295,10 +318,10 @@ for f = 1:fileData.nfolders
 
     %% Complete and save datalog
     if settings.dataset == 0
-        saveLogs(dataLog, dataTimeline, dataEvents, savepath, ['file_' filename(1:end-5)], [])
+        saveLogs(dataLog, dataTimeline, dataEvents, savepath, filename(1:end-5), [])
     elseif settings.dataset == 1
-        saveLogs(dataLog, dataTimeline, dataEvents, savepath, ['folder_' fileData.rootName], [])
+        saveLogs(dataLog, dataTimeline, dataEvents, savepath, fileData.rootName, [])
     elseif settings.dataset == 2
-        saveLogs(dataLog, dataTimeline, dataEvents, savepath, ['folder_' fileData.folders(f).name], fileData.rootName)
+        saveLogs(dataLog, dataTimeline, dataEvents, savepath, fileData.folders(f).name, fileData.rootName)
     end
 end

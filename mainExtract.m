@@ -23,13 +23,13 @@
 % This is an open research tool that is not intended for clinical purposes.
 
 %% Manual settings
-dataset = 2;                            % Select either a a single file (0), a single folder (1) or a set of folders (2)
+dataset = 1;                            % Select either a a single file (0), a single folder (1) or a set of folders (2)
 ecgMethod = 1;                          % ECG suppression of Streaming data: set to (2) for (extensive) manual suppression, (1) for automatic suppression, (0) for no suppression
 rWindow = [0.25 0.4];                   % Window around R-peak [before after] for calculating SVD components, in seconds. [0.25 0.4] is default, alternatively use [0.2 0.2]
-linenoise = [50, 0.2];                  % Frequency and bandwidth [Hz] of line-noise to remove, usually either 50 or 60 Hz with 0.2 or 0.5 Hz bandwidth
+linenoise = [50, 0.2];                  % Frequency and bandwidth [Hz] of line-noise to remove, usually either 50 or 60 Hz with 0.2 or 0.5 Hz bandwidth (e.g., [50 0.2])
 tZone = datetime().SystemTimeZone;      % Timezone to use for correcting for UTC offset and daylight saving time of Timeline and Events data. Default is datetime().SystemTimeZone. Set manually by replacing with IANA timezone name (see command timezones())
-plotData = 0;                           % Plot data (1) or not (0)
-showFig = 0;                            % Show figures (1) or not (0)
+plotData = 1;                           % Plot data (1) or not (0)
+showFig = 1;                            % Show figures (1) or not (0)
 
 %% Standard settings and collection of files
 datafields = {'SenseChannelTests','LfpMontageTimeDomain','BrainSenseSurveysTimeDomain','BrainSenseTimeDomain','DiagnosticData'};
@@ -71,8 +71,8 @@ for f = 1:fileData.nfolders
     % Get empty output structures for Timeline and Events data and data log
     dataTimeline = getStructures('Timeline', fieldsTL);
     dataEvents = getStructures('Events', fieldsSE);
-    dataLog = table('Size',[fileData.nfiles,7], 'VariableTypes',{'string','int64','int64','int64','int64','int64','int64'}, ...
-                     'VariableNames',{'Filename','Setup_n_runs','Survey_n_runs','Identifier_n_runs','Streaming_n_runs','Timeline_present','Events_present'});
+    dataLog = table('Size',[fileData.nfiles,8], 'VariableTypes',{'string','string','int64','int64','int64','int64','int64','int64'}, ...
+                     'VariableNames',{'Filename','File_check','Setup_n_runs','Survey_n_runs','Identifier_n_runs','Streaming_n_runs','Timeline_present','Events_present'});
 
     %% Loop over files
     for i = 1:fileData.nfiles
@@ -95,8 +95,32 @@ for f = 1:fileData.nfolders
         % Add filename to log
         dataLog{i,"Filename"} = string(filename);
 
-        % Load JSON and collect general info
-        js = jsondecode(fileread([folder filesep filename]));
+        % Load JSON, check format, and collect general info
+        try
+            js = jsondecode(fileread([folder filesep filename]));
+            try
+                datetime(strrep(js.SessionDate(1:end-1),'T',' '));
+            catch
+                warning('Could not parse SessionDate for file: %s', filename);
+                dataLog{i,'File_check'} = "Incorrect format SessionDate";
+                dataLog{i,3:end} = -1;
+                continue
+            end
+            try
+                datetime(strrep(js.SessionEndDate(1:end-1),'T',' '));
+            catch
+                warning('Could not parse SessionEndDate for file: %s', filename);
+                dataLog{i,'File_check'} = "Incorrect format SessionEndDate";
+                dataLog{i,3:end} = -1;
+                continue
+            end
+            dataLog{i,'File_check'} = "Pass";
+        catch
+            warning('Could not load file: %s', filename);
+            dataLog{i,'File_check'} = "Could not load file";
+            dataLog{i,3:end} = -1;
+            continue
+        end
         info = getInfo(folder, filename, js);
         dataTimeline.Info = vertcat(dataTimeline.Info, info);
     
@@ -297,10 +321,10 @@ for f = 1:fileData.nfolders
 
     %% Complete and save datalog
     if dataset == 0
-        saveLogs(dataLog, dataTimeline, dataEvents, savepath, ['file_' filename(1:end-5)], [])
+        saveLogs(dataLog, dataTimeline, dataEvents, savepath, filename(1:end-5), [])
     elseif dataset == 1
-        saveLogs(dataLog, dataTimeline, dataEvents, savepath, ['folder_' fileData.rootName], [])
+        saveLogs(dataLog, dataTimeline, dataEvents, savepath, fileData.rootName, [])
     elseif dataset == 2
-        saveLogs(dataLog, dataTimeline, dataEvents, savepath, ['folder_' fileData.folders(f).name], fileData.rootName)
+        saveLogs(dataLog, dataTimeline, dataEvents, savepath, fileData.folders(f).name, fileData.rootName)
     end
 end
