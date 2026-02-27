@@ -1,7 +1,7 @@
 % Author: B.J. Keulen and J.T. Boonstra
 % Date: 17-02-2025
 %
-% Copyright 2025 B.J. Keulen, M.J. Stam & J.T. Boonstra
+% Copyright 2026 B.J. Keulen, M.J. Stam & J.T. Boonstra
 % SPDX-License-Identifier: Apache-2.0
 %
 % Function to retrieve and overview of all sessions and group changes
@@ -167,7 +167,11 @@ function [sessions, changes] = getHistory(dataTimeline)
                         end
                     end
                     if ~any(max(missLogs{:,'SessionStart'}, start) < min(missLogs{:,'SessionEnd'}, stop))
-                        missLogs = [missLogs; {start, stop}];
+                        if stop < dataTimeline.Info(end).SessionEndDateUtc
+                            missLogs = [missLogs; {start, stop}];
+                        else
+                            warning('EventLogs found with timestamp after last known session. Please check file %s', dataTimeline.Info(i).OriginalFile)
+                        end
                     end
                 end
             end

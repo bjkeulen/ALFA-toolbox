@@ -1,7 +1,7 @@
 % Author: B.J. Keulen & J.T. Boonstra
 % Date: 19-09-2024
 %
-% Copyright 2025 B.J. Keulen, M.J. Stam & J.T. Boonstra
+% Copyright 2026 B.J. Keulen, M.J. Stam & J.T. Boonstra
 % SPDX-License-Identifier: Apache-2.0
 %
 % Function for retrieving stimulation and sensing parameters for a given

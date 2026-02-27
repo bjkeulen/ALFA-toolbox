@@ -1,7 +1,7 @@
 % Author: B.J. Keulen, M.J. Stam & J.T. Boonstra
 % Date: 29-03-2024
 %
-% Copyright 2025 B.J. Keulen, M.J. Stam & J.T. Boonstra
+% Copyright 2026 B.J. Keulen, M.J. Stam & J.T. Boonstra
 % SPDX-License-Identifier: Apache-2.0
 %
 % Function for the extraction of BrainSenseTimeDomain Streaming data and
@@ -39,11 +39,79 @@ function dataStreaming = getStreaming(info, js, linenoise, ecgMethod, rTime, sav
 
     % Check number of recordings in file
     FirstPacketDateTime = strrep(strrep({TDdata(:).FirstPacketDateTime},'T',' '),'Z','');
-    runs = unique(FirstPacketDateTime);
+
+    % ----- below ---- is adjusted !! MJS
+
+    % runs = unique(FirstPacketDateTime);
+
+    ChannelRaw = {TDdata(:).Channel};
+
+    % Obtain LEFT/RIGHT after last "_" in ChannelRaw:
+    out  = regexp(ChannelRaw, '[^_]+$', 'match');
+    side = cellfun(@(x) x{1}, out, 'UniformOutput', false);   % Nx1 cell: 'LEFT'/'RIGHT'
+
+    % Group on timestamp
+    [uTimes, ~, g] = unique(FirstPacketDateTime, 'stable');
+
+    runCount = 0;
+
+    for k = 1:numel(uTimes)
+        idx = find(g == k);              % all rows with same timestamp (in order)
+        s   = side(idx);                 % hemispheres at this timestamp
+
+        hasL = any(strcmpi(s, 'LEFT'));
+        hasR = any(strcmpi(s, 'RIGHT'));
+
+         if hasL && hasR
+             % both LEFT and RIGHT available at timestamp: put together in one run
+             runCount = runCount + 1;
+             runs{1,runCount} = uTimes{k};
+         else
+             % only LEFT or only RIGHT: each occurrence is another run
+             for j = 1:numel(idx)
+                 runCount = runCount + 1;
+                 runs{1,runCount} = uTimes{k};
+             end
+         end
+    end
+
+    % ----- above ---- is adjusted !! MJS
+
+    usedCount = containers.Map('KeyType','char','ValueType','double');
     
     % Loop over recordings within file
     for c = 1:length(runs)
         i=perceive_ci(runs{c}, FirstPacketDateTime);
+
+        % ----- below ---- is adjusted !! (in order to collect all runs, even if they are from the same channel on the same timestamp) - MJS
+
+        % --- fix duplicated hits: split or merge depending on channels ---
+        if numel(i) > 1
+            % ChannelRaw needed for these hits
+            ch = {TDdata(i).Channel};  % cell array of chars
+
+            % determine "side" of label after "_":
+            tmp  = regexp(ch, '[^_]+$', 'match');
+            lab  = cellfun(@(x) x{1}, tmp, 'UniformOutput', false);  % e.g. 'LEFT'/'RIGHT' or other last token
+
+            % CASE A: multiple different labels (eg LEFT+RIGHT) -> put together in one run (keep "i" like it is):
+            if numel(unique(lower(lab))) > 1
+                % keep i as vector (merge)
+            else
+                % CASE B: same label (eg RIGHT+RIGHT) -> treat as different runs:
+                % select one index from i in an alternating manner, depending on how often this run has occurred
+                key = runs{c};  % timestamp string als key
+
+                if ~isKey(usedCount, key)
+                    usedCount(key) = 0;
+                end
+                usedCount(key) = usedCount(key) + 1;
+
+                pick = mod(usedCount(key)-1, numel(i)) + 1;
+                i = i(pick);  % make "i" scalar
+            end
+        end
+        % --- end fix ---
 
         % Save FirstPacketDateTime
         info.FirstPacketDateTime = datetime(FirstPacketDateTime{i(1)});

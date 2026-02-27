@@ -1,7 +1,7 @@
 % Author: B.J. Keulen
 % Date: 10-11-2025
 %
-% Copyright 2025 B.J. Keulen and M.J. Stam
+% Copyright 2026 B.J. Keulen, M.J. Stam & J.T. Boonstra
 % SPDX-License-Identifier: Apache-2.0
 %
 % User interface to collect settings for LFP processing within the ALFA
