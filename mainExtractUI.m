@@ -1,17 +1,17 @@
 % Author: B.J. Keulen
 % Date: 05-03-2024
 %
-% Copyright 2025 B.J. Keulen and M.J. Stam
+% Copyright 2026 B.J. Keulen, M.J. Stam & J.T. Boonstra
 % SPDX-License-Identifier: Apache-2.0
 % 
 % GitHub Repository: https://github.com/bjkeulen/ALFA-toolbox.
 %
 % Main script of the Amsterdam Local Field potential Analysis (ALFA) 
-% toolbox created by B.J. Keulen and M.J. Stam. The ALFA toolbox can be 
-% used for extracting, processing, rearranging and visualizing data from 
-% Medtronic PerceptTM JSON reports containing local field potential (LFP) 
-% data. General settings are given through a user interface which appears
-% when running this script.
+% toolbox created by B.J. Keulen, M.J. Stam and J.T. Boonstra. The ALFA
+% toolbox can be used for extracting, processing, rearranging and 
+% visualizing data from Medtronic PerceptTM JSON reports containing local
+% field potential (LFP) data. General settings are given through a user 
+% interface which appears when running this script.
 %
 % Part of the structure of this code is adapted from the perceive.m file
 % of the perceive toolbox by Wolf-Julian Neumann, Tomas Sieger and Gerd 

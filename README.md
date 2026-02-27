@@ -1,19 +1,19 @@
 # Amsterdam Local Field Potential Analysis (ALFA) toolbox
-
-## About
 The ALFA toolbox is a MATLAB tool developed for the extraction, processing, restructuring and visualization of data from JSON files containing local field potential data recorded by the Medtronic PerceptTM neurostimulator.
 
 This is an open research tool that is not intended for clinical purposes.
 
+## About
 ### Developed by:
-* B.J. (Bart) Keulen     -   Amsterdam UMC, Amsterdam, The Netherlands
-* M.J. (Mariëlle) Stam   -   Amsterdam UMC, Amsterdam, The Netherlands
+* B.J. (Bart) Keulen       -   Amsterdam UMC, Amsterdam, The Netherlands
+* M.J. (Mariëlle) Stam     -   Amsterdam UMC, Amsterdam, The Netherlands
+* J.T. (Jackson) Boonstra  -   Vrije Universiteit Amsterdam, The Netherlands
 
 ### GitHub repository:
 https://github.com/Data-Driven-Brain-Stimulation/ALFA-toolbox
 
 ### Please cite this article when using our toolbox:
-Manuscript in preparation.
+Keulen BJ et al. Amsterdam Local Field potential Analysis (ALFA) toolbox: an open source software package for deep brain stimulation research 
 
 ## Outline
 ### Main scripts
@@ -49,14 +49,19 @@ After running one of these scripts (and having set the general settings in the c
 * showFig  -   Show figures (1) or not (0)
 
 ### Output
-All output files are stored within a subfolder of the location of the selected file or folder. Depending on the type of dataset, this subfolder will be named 
+All output files are stored within a subfolder of the location of the selected file or folder. Depending on the type of dataset, this subfolder will be named:
 * single file: [filename]_unpacked
 * folder: folder_[name of folder]_unpacked
 * folderset: folderset_[name of folderset]_unpacked
 
-The datafiles given as output are saved as follows:
-* single file: [filename]_[datatype]
-* folder: [name of folder]_[datatype]
-* folderset: [datatype]/[name of folder within folderset]_[datatype]
+Depending on the type of data and type of dataset processing, the datafiles given as output are saved within this created subfolder as follows:
 
-With datatype being Setup, Survey, Identifier, Streaming, Timeline or Events.
+*Datatypes Setup, Survey, Identifier and Streaming*
+•	single file: [filename]_[datatype].mat
+•	folder: [name of folder]_[datatype].mat
+•	folderset: [datatype]\[name of folder within folderset]_[number of JSON within folder]_[datatype].mat
+
+*Datatypes Timeline and Events*
+•	single file: [filename]_[datatype].mat
+•	folder: [name of folder]_[datatype].mat
+•	folderset: [datatype]\[name of folder within folderset]_[datatype].mat

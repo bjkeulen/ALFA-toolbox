@@ -1,18 +1,19 @@
 % Author: B.J. Keulen
 % Date: 21-10-2024
 %
-% Copyright 2025 B.J. Keulen and M.J. Stam
+% Copyright 2026 B.J. Keulen, M.J. Stam & J.T. Boonstra
 % SPDX-License-Identifier: Apache-2.0
 % 
 % GitHub Repository: https://github.com/bjkeulen/ALFA-toolbox.
 %
 % Main script of the Amsterdam Local Field potential Analysis (ALFA) 
-% toolbox created by B.J. Keulen and M.J. Stam. This main script can be 
-% used for plotting outputs from the ALFA toolbox (see mainExtract.m and 
-% mainExtractUI.m). One or more files can be selected. Possible inputs are 
-% MAT files containing either dataStreaming, dataTimeline, dataEvents,
-% dataSurvey, dataIdentifier or dataSetup. Figures are created and saved 
-% into a subfolder of the folder containing the MAT file(s).
+% toolbox created by B.J. Keulen, M.J. Stam and J.T. Boonstra. This main 
+% script can be used for plotting outputs from the ALFA toolbox (see 
+% mainExtract.m and mainExtractUI.m). One or more files can be selected. 
+% Possible inputs are MAT files containing either dataStreaming, 
+% dataTimeline, dataEvents, dataSurvey, dataIdentifier or dataSetup. 
+% Figures are created and saved into a subfolder of the folder containing
+% the MAT file(s).
 %
 % This is an open research tool that is not intended for clinical purposes.
 
