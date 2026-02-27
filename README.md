@@ -50,18 +50,18 @@ After running one of these scripts (and having set the general settings in the c
 
 ### Output
 All output files are stored within a subfolder of the location of the selected file or folder. Depending on the type of dataset, this subfolder will be named:
-* single file: [filename]_unpacked
-* folder: folder_[name of folder]_unpacked
-* folderset: folderset_[name of folderset]_unpacked
+* single file: [filename] _ unpacked
+* folder: folder _ [name of folder] _ unpacked
+* folderset: folderset _ [name of folderset] _ unpacked
 
 Depending on the type of data and type of dataset processing, the datafiles given as output are saved within this created subfolder as follows:
 
 *Datatypes Setup, Survey, Identifier and Streaming*
-*	single file: [filename]_[datatype].mat
-*	folder: [name of folder]_[datatype].mat
-*	folderset: [datatype]\[name of folder within folderset]_[number of JSON within folder]_[datatype].mat
+*	single file: [filename] _ [datatype].mat
+*	folder: [name of folder] _ [datatype].mat
+*	folderset: [datatype] filesep [name of folder within folderset] _ json[number of JSON within folder] _ [datatype].mat
 
 *Datatypes Timeline and Events*
-*	single file: [filename]_[datatype].mat
-*	folder: [name of folder]_[datatype].mat
-*	folderset: [datatype]\[name of folder within folderset]_[datatype].mat
+*	single file: [filename] _ [datatype].mat
+*	folder: [name of folder] _ [datatype].mat
+*	folderset: [datatype] \ [name of folder within folderset] _ [datatype].mat
