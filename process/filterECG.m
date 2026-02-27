@@ -1,7 +1,7 @@
 % Author: M.J. Stam
 % Date: 27-08-2024
 %
-% Copyright 2025 B.J. Keulen and M.J. Stam
+% Copyright 2026 B.J. Keulen, M.J. Stam & J.T. Boonstra
 % SPDX-License-Identifier: Apache-2.0
 %
 % Function to automatically apply the Singular Value Decomposition ECG 
@@ -59,49 +59,58 @@ function dataRec = filterECG(dataRec, rWindow)
     if ~isempty(chL)
     
         % ECG suppression starts with an R-peak detection algorithm
-        % disp('Performing R-peak detection for LFP_L');
-    
-        % Set threshold for minimal ECG R-peak height
-        % Threshold is set according to the part of the signal before a 
-        % potential artifact (> 5 std deviation) occurs (mx):
-        upthres = mean(dataRec.Data.LFP(:,chL), "omitmissing")+(5*std(dataRec.Data.LFP(:,chL), "omitmissing"));
-        lowthres = mean(dataRec.Data.LFP(:,chL), "omitmissing")-(5*std(dataRec.Data.LFP(:,chL), "omitmissing"));
-    
-        % Convert to string of zeros and ones
-        Y = dataRec.Data.LFP(:,chL)>lowthres & dataRec.Data.LFP(:,chL)<upthres; 
-        idx=find(Y<1);
-        if ~isempty(find(Y<1,1))
-            idrange_full = [0; idx; length(dataRec.Data.LFP(:,chL))];
-            idrange_start = find(diff(idrange_full)==max(diff(idrange_full)));
-            mx = idrange_full(idrange_start)+1:idrange_full(idrange_start+1)-1;
+
+        % R-peak detection algorithm only runs for recordings longer than half
+        % of the sampling frequency
+
+        if size(dataRec.Data.LFP(:,chL),1) > (dataRec.Settings.SamplingFrequencyTimeDomain / 2) + 1
+
+            % disp('Performing R-peak detection for LFP_L');
+
+            % Set threshold for minimal ECG R-peak height
+            % Threshold is set according to the part of the signal before a
+            % potential artifact (> 5 std deviation) occurs (mx):
+            upthres = mean(dataRec.Data.LFP(:,chL), "omitmissing")+(5*std(dataRec.Data.LFP(:,chL), "omitmissing"));
+            lowthres = mean(dataRec.Data.LFP(:,chL), "omitmissing")-(5*std(dataRec.Data.LFP(:,chL), "omitmissing"));
+
+            % Convert to string of zeros and ones
+            Y = dataRec.Data.LFP(:,chL)>lowthres & dataRec.Data.LFP(:,chL)<upthres;
+            idx=find(Y<1);
+            if ~isempty(find(Y<1,1))
+                idrange_full = [0; idx; length(dataRec.Data.LFP(:,chL))];
+                idrange_start = find(diff(idrange_full)==max(diff(idrange_full)));
+                mx = idrange_full(idrange_start)+1:idrange_full(idrange_start+1)-1;
+            else
+                mx = 1:length(dataRec.Data.LFP(:,chL));
+            end
+
+            % Initiate positive polarity of the R-peaks
+            flagpeak_left = 1;
+
+            % Normalize and find peaks for LFP_L
+            LFPnorm_left = normalize(dataRec.Data.LFP(:,chL));
+
+            % Threshold of 2 * sd (instead of 2.5 * sd as described in Stam et al. (2023)
+            % https://doi.org/10.1016/j.clinph.2022.11.011) for peak detection:
+            [Rpeak_left, locs_Rwave_left] = findpeaks(LFPnorm_left, 'MinPeakHeight', (2 * std(LFPnorm_left(mx))), 'MinPeakDistance', dataRec.Settings.SamplingFrequencyTimeDomain / 2);
+            [Speak_left, locs_Swave_left] = findpeaks(-LFPnorm_left, 'MinPeakHeight', (2 * std(-LFPnorm_left(mx))), 'MinPeakDistance', dataRec.Settings.SamplingFrequencyTimeDomain / 2);
+
+            if isempty(Rpeak_left)
+                Rpeak_left = 0;
+            end
+            if isempty(Speak_left)
+                Speak_left = 0;
+            end
+            % Flip polarity if the mean height and the number of detected R-peaks
+            % are higher with negative polarity
+            if mean(Speak_left) > mean(Rpeak_left) && length(Speak_left) >= length(Rpeak_left)
+                locs_Rwave_left = locs_Swave_left;
+                locs_Rwave_left = unique(locs_Rwave_left); locs_Rwave_left = locs_Rwave_left(find(locs_Rwave_left>0));
+                LFPnorm_left = -LFPnorm_left;
+                flagpeak_left = -1;
+            end
         else
-            mx = 1:length(dataRec.Data.LFP(:,chL));
-        end
-    
-        % Initiate positive polarity of the R-peaks
-        flagpeak_left = 1;
-
-        % Normalize and find peaks for LFP_L
-        LFPnorm_left = normalize(dataRec.Data.LFP(:,chL));
-
-        % Threshold of 2 * sd (instead of 2.5 * sd as described in Stam et al. (2023)
-        % https://doi.org/10.1016/j.clinph.2022.11.011) for peak detection:
-        [Rpeak_left, locs_Rwave_left] = findpeaks(LFPnorm_left, 'MinPeakHeight', (2 * std(LFPnorm_left(mx))), 'MinPeakDistance', dataRec.Settings.SamplingFrequencyTimeDomain / 2);
-        [Speak_left, locs_Swave_left] = findpeaks(-LFPnorm_left, 'MinPeakHeight', (2 * std(-LFPnorm_left(mx))), 'MinPeakDistance', dataRec.Settings.SamplingFrequencyTimeDomain / 2);
-    
-        if isempty(Rpeak_left)
-            Rpeak_left = 0;
-        end
-        if isempty(Speak_left)
-            Speak_left = 0;
-        end
-        % Flip polarity if the mean height and the number of detected R-peaks 
-        % are higher with negative polarity
-        if mean(Speak_left) > mean(Rpeak_left) && length(Speak_left) >= length(Rpeak_left)
-            locs_Rwave_left = locs_Swave_left;
-            locs_Rwave_left = unique(locs_Rwave_left); locs_Rwave_left = locs_Rwave_left(find(locs_Rwave_left>0));
-            LFPnorm_left = -LFPnorm_left;
-            flagpeak_left = -1;
+            locs_Rwave_left = [];
         end
     
         % A few pre-requisites before the SVD ECG suppression method is run:
@@ -197,51 +206,60 @@ function dataRec = filterECG(dataRec, rWindow)
     if ~isempty(chR)
     
         % ECG suppression starts with an R-peak detection algorithm
-        % disp('Performing R-peak detection for LFP_R');
-    
-        % Set threshold for minimal ECG R-peak height
-        % Threshold is set according to the part of the signal before a 
-        % potential artifact (> 5 std deviation) occurs (mx):
-        upthres = mean(dataRec.Data.LFP(:,chR), "omitmissing")+(5*std(dataRec.Data.LFP(:,chR), "omitmissing"));
-        lowthres = mean(dataRec.Data.LFP(:,chR), "omitmissing")-(5*std(dataRec.Data.LFP(:,chR), "omitmissing"));
-    
-        % Convert to string of zeros and ones
-        Y = dataRec.Data.LFP(:,chR)>lowthres&dataRec.Data.LFP(:,chR)<upthres; 
-        idx=find(Y<1);
-        if ~isempty(find(Y<1,1))
-            idrange_full = [0; idx; length(dataRec.Data.LFP(:,chR))];
-            idrange_start = find(diff(idrange_full)==max(diff(idrange_full)));
-            mx = idrange_full(idrange_start)+1:idrange_full(idrange_start+1)-1;
-        else
-            mx = 1:length(dataRec.Data.LFP(:,chR));
-        end
-    
-        % Initiate positive polarity of the R-peaks
-        flagpeak_right = 1;
-        
-        % Normalize and find peaks for LFP_R
-        LFPnorm_right = normalize(dataRec.Data.LFP(:,chR));
 
-        % Threshold of 2 * sd (instead of 2.5 * sd as described in Stam et al. (2023)
-        % https://doi.org/10.1016/j.clinph.2022.11.011) for peak detection:
-        [Rpeak_right, locs_Rwave_right] = findpeaks(LFPnorm_right, 'MinPeakHeight', (2 * std(LFPnorm_right(mx))), 'MinPeakDistance', dataRec.Settings.SamplingFrequencyTimeDomain / 2);
-        [Speak_right, locs_Swave_right] = findpeaks(-LFPnorm_right, 'MinPeakHeight', (2 * std(-LFPnorm_right(mx))), 'MinPeakDistance', dataRec.Settings.SamplingFrequencyTimeDomain / 2);
-    
-        if isempty(Rpeak_right)
-            Rpeak_right = 0;
+        % R-peak detection algorithm only runs for recordings longer than half
+        % of the sampling frequency
+
+        if size(dataRec.Data.LFP(:,chR),1) > (dataRec.Settings.SamplingFrequencyTimeDomain / 2) + 1
+
+            % disp('Performing R-peak detection for LFP_R');
+
+            % Set threshold for minimal ECG R-peak height
+            % Threshold is set according to the part of the signal before a
+            % potential artifact (> 5 std deviation) occurs (mx):
+            upthres = mean(dataRec.Data.LFP(:,chR), "omitmissing")+(5*std(dataRec.Data.LFP(:,chR), "omitmissing"));
+            lowthres = mean(dataRec.Data.LFP(:,chR), "omitmissing")-(5*std(dataRec.Data.LFP(:,chR), "omitmissing"));
+
+            % Convert to string of zeros and ones
+            Y = dataRec.Data.LFP(:,chR)>lowthres&dataRec.Data.LFP(:,chR)<upthres;
+            idx=find(Y<1);
+            if ~isempty(find(Y<1,1))
+                idrange_full = [0; idx; length(dataRec.Data.LFP(:,chR))];
+                idrange_start = find(diff(idrange_full)==max(diff(idrange_full)));
+                mx = idrange_full(idrange_start)+1:idrange_full(idrange_start+1)-1;
+            else
+                mx = 1:length(dataRec.Data.LFP(:,chR));
+            end
+
+            % Initiate positive polarity of the R-peaks
+            flagpeak_right = 1;
+
+            % Normalize and find peaks for LFP_R
+            LFPnorm_right = normalize(dataRec.Data.LFP(:,chR));
+
+            % Threshold of 2 * sd (instead of 2.5 * sd as described in Stam et al. (2023)
+            % https://doi.org/10.1016/j.clinph.2022.11.011) for peak detection:
+            [Rpeak_right, locs_Rwave_right] = findpeaks(LFPnorm_right, 'MinPeakHeight', (2 * std(LFPnorm_right(mx))), 'MinPeakDistance', dataRec.Settings.SamplingFrequencyTimeDomain / 2);
+            [Speak_right, locs_Swave_right] = findpeaks(-LFPnorm_right, 'MinPeakHeight', (2 * std(-LFPnorm_right(mx))), 'MinPeakDistance', dataRec.Settings.SamplingFrequencyTimeDomain / 2);
+
+            if isempty(Rpeak_right)
+                Rpeak_right = 0;
+            end
+            if isempty(Speak_right)
+                Speak_right = 0;
+            end
+            % Flip polarity if the mean height and the number of detected R-peaks
+            % are higher with negative polarity
+            if mean(Speak_right) > mean(Rpeak_right) && length(Speak_right) >= length(Rpeak_right)
+                locs_Rwave_right = locs_Swave_right;
+                locs_Rwave_right = unique(locs_Rwave_right); locs_Rwave_right = locs_Rwave_right(find(locs_Rwave_right>0));
+                LFPnorm_right = -LFPnorm_right;
+                flagpeak_right = -1;
+            end
+        else
+            locs_Rwave_right = [];
         end
-        if isempty(Speak_right)
-            Speak_right = 0;
-        end
-        % Flip polarity if the mean height and the number of detected R-peaks 
-        % are higher with negative polarity
-        if mean(Speak_right) > mean(Rpeak_right) && length(Speak_right) >= length(Rpeak_right)
-            locs_Rwave_right = locs_Swave_right;
-            locs_Rwave_right = unique(locs_Rwave_right); locs_Rwave_right = locs_Rwave_right(find(locs_Rwave_right>0));
-            LFPnorm_right = -LFPnorm_right;
-            flagpeak_right = -1;
-        end
-    
+
         % A few pre-requisites before the SVD ECG suppression method is run:
            % If there are no R-peaks detected at all:
         if isempty(locs_Rwave_right)

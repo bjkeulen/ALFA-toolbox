@@ -1,7 +1,7 @@
 % Authors: M.J. Stam & B.J. Keulen
 % Date: 29-03-2024
 %
-% Copyright 2025 B.J. Keulen and M.J. Stam
+% Copyright 2026 B.J. Keulen, M.J. Stam & J.T. Boonstra
 % SPDX-License-Identifier: Apache-2.0
 % 
 % Look for duplicates in Timeline or Events. The same data may be present

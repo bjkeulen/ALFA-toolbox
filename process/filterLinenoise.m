@@ -1,7 +1,7 @@
 % Author: M.J. Stam
 % Date: 27-08-2024
 %
-% Copyright 2025 B.J. Keulen and M.J. Stam
+% Copyright 2026 B.J. Keulen, M.J. Stam & J.T. Boonstra
 % SPDX-License-Identifier: Apache-2.0
 %
 % Function to apply a power line noise filter to Streaming recordings. The

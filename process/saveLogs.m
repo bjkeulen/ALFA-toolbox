@@ -1,7 +1,7 @@
 % Author: B.J. Keulen
 % Date: 23-01-2026
 %
-% Copyright 2025 B.J. Keulen and M.J. Stam
+% Copyright 2026 B.J. Keulen, M.J. Stam & J.T. Boonstra
 % SPDX-License-Identifier: Apache-2.0
 %
 % Function to save an Excel file containing a data log with info about 

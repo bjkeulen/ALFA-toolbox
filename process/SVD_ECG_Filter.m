@@ -3,7 +3,7 @@
 % Adjusted by: M.J. Stam
 % Date: 01-10-2021
 %
-% Copyright 2025 B.J. Keulen and M.J. Stam
+% Copyright 2026 B.J. Keulen, M.J. Stam & J.T. Boonstra
 % SPDX-License-Identifier: Apache-2.0
 %
 % Function to suppress ECG-artifact in LFP time series, described in-depth
