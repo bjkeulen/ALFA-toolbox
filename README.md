@@ -57,11 +57,11 @@ All output files are stored within a subfolder of the location of the selected f
 Depending on the type of data and type of dataset processing, the datafiles given as output are saved within this created subfolder as follows:
 
 *Datatypes Setup, Survey, Identifier and Streaming*
-•	single file: [filename]_[datatype].mat
-•	folder: [name of folder]_[datatype].mat
-•	folderset: [datatype]\[name of folder within folderset]_[number of JSON within folder]_[datatype].mat
+*	single file: [filename]_[datatype].mat
+*	folder: [name of folder]_[datatype].mat
+*	folderset: [datatype]\[name of folder within folderset]_[number of JSON within folder]_[datatype].mat
 
 *Datatypes Timeline and Events*
-•	single file: [filename]_[datatype].mat
-•	folder: [name of folder]_[datatype].mat
-•	folderset: [datatype]\[name of folder within folderset]_[datatype].mat
+*	single file: [filename]_[datatype].mat
+*	folder: [name of folder]_[datatype].mat
+*	folderset: [datatype]\[name of folder within folderset]_[datatype].mat
