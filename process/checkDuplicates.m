@@ -44,28 +44,37 @@ function data = checkDuplicates(data, fieldsTL)
 
         % Go through full data and check differences
         for e = 1:length(events)
-            eventdata = data.Data(strcmp(data.Data{:,'EventName'}, events{e}),:);
-            dt_diff = diff(eventdata.DateTime);
-            eventdata([false; dt_diff < max_diff],:) = [];
+            eventData = data.Data(strcmp(data.Data{:,'EventName'}, events{e}),:);
+
+            eventAll = eventData(~cellfun(@isempty, eventData.Frequency),:);
+            diff_full = diff(eventAll.DateTime);
+            eventAll([false; diff_full < max_diff],:) = [];
+
+            eventEmpty = eventData(cellfun(@isempty, eventData.Frequency),:);
+            for i = 1:height(eventEmpty)
+                if ~any((eventAll.DateTime - eventEmpty{i,'DateTime'}) < max_diff)
+                    eventAll = [eventAll; eventEmpty(i,:)];
+                end
+            end
 
             if e == 1
-                alldata = eventdata;
+                allData = eventAll;
             else
-                alldata = [alldata; eventdata];
+                allData = [allData; eventAll];
             end
         end
 
         % Remove Events with less than 100 values
         idx = [];
-        for e = 1:height(alldata)
-            if isempty(alldata{e,'Frequency'}{:}) || length(alldata{e,'Frequency'}{:}) == 100
+        for e = 1:height(allData)
+            if isempty(allData{e,'Frequency'}{:}) || length(allData{e,'Frequency'}{:}) == 100
                 idx = [idx, e];
             end
         end
-        alldata = alldata(idx,:);
+        allData = allData(idx,:);
 
         % Sort on time and replace
-        data.Data = sortrows(alldata,'DateTime');
+        data.Data = sortrows(allData,'DateTime');
 
     end
 end
