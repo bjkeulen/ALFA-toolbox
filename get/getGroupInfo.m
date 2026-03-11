@@ -121,10 +121,6 @@ function [rate, pulsewidth, chan, freq, ampLower, ampUpper, lfpLower, lfpUpper] 
                     elseif isfield(group.ProgramSettings, 'RateInHertz')
                         rate(1) = group.ProgramSettings.RateInHertz; 
                     end
-                    if isfield(program, 'LowerLimitInMilliAmps')
-                        ampLower(1) = program.LowerLimitInMilliAmps;
-                        ampUpper(1) = program.UpperLimitInMilliAmps;
-                    end
                 end
             end
     
@@ -142,10 +138,6 @@ function [rate, pulsewidth, chan, freq, ampLower, ampUpper, lfpLower, lfpUpper] 
                         rate(2) = program.RateInHertz; 
                     elseif isfield(group.ProgramSettings, 'RateInHertz')
                         rate(2) = group.ProgramSettings.RateInHertz; 
-                    end
-                    if isfield(program, 'LowerLimitInMilliAmps')
-                        ampLower(2) = program.LowerLimitInMilliAmps;
-                        ampUpper(2) = program.UpperLimitInMilliAmps;
                     end
                 end   
             end
