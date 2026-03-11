@@ -4,7 +4,8 @@
 % Copyright 2026 B.J. Keulen, M.J. Stam & J.T. Boonstra
 % SPDX-License-Identifier: Apache-2.0
 % 
-% GitHub Repository: https://github.com/bjkeulen/ALFA-toolbox.
+% GitHub Repository:
+% https://github.com/Data-Driven-Brain-Stimulation/ALFA-toolbox
 %
 % Main script of the Amsterdam Local Field potential Analysis (ALFA) 
 % toolbox created by B.J. Keulen, M.J. Stam and J.T. Boonstra. This main 
