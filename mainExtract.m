@@ -136,135 +136,135 @@ for f = 1:fileData.nfolders
         
                 switch datafields{b}
 
-                    % % Setup
-                    % case 'SenseChannelTests'
-                    % 
-                    %     % Folderset processing
-                    %     if dataset == 2
-                    %         savepath_setup = [savepath filesep 'Setup'];
-                    %         if ~exist([savepath filesep 'Setup'], 'dir')
-                    %            mkdir([savepath filesep 'Setup'])
-                    %         end
-                    %         dataSetup = getSetup(info, js, [savepath filesep 'Setup'], savenameJSON);
-                    %         if plotData
-                    %             plotSetup(dataSetup, [savepath filesep 'Setup' filesep 'Figures'], savenameJSON, showFig);
-                    %         end
-                    % 
-                    %     % Single file and folder processing
-                    %     else
-                    %         dataSetup = getSetup(info, js, savepath, savenameJSON);
-                    %         if plotData
-                    %             plotSetup(dataSetup, [savepath filesep 'Figures'], savenameJSON, showFig);
-                    %         end
-                    %     end
-                    % 
-                    %     % Add number of runs to log
-                    %     dataLog{i,'Setup_n_runs'} = dataSetup.nRuns;
-                    % 
-                    % % Survey old format
-                    % case 'LfpMontageTimeDomain'
-                    % 
-                    %     % Only if new format is not present
-                    %     if ~isfield(js, 'BrainSenseSurveysTimeDomain')
-                    % 
-                    %         % Folderset processing
-                    %         if dataset == 2
-                    %             if ~exist([savepath filesep 'Survey'], 'dir')
-                    %                mkdir([savepath filesep 'Survey'])
-                    %             end
-                    %             dataSurvey = getSurvey(info, js, [], [savepath filesep 'Survey'], savenameJSON);
-                    %             if plotData
-                    %                 plotSurveys(dataSurvey, [savepath filesep 'Survey' filesep 'Figures'], savenameJSON, showFig);
-                    %             end
-                    % 
-                    %         % Single file and folder processing
-                    %         else
-                    %             dataSurvey = getSurvey(info, js, [], savepath, savenameJSON);
-                    %             if plotData
-                    %                 plotSurveys(dataSurvey, [savepath filesep 'Figures'], savenameJSON, showFig);
-                    %             end
-                    %         end
-                    % 
-                    %         % Add number of runs to log
-                    %         dataLog{i,'Survey_n_runs'} = dataSurvey.nRuns;
-                    %     end
-                    % 
-                    % % Survey and Identifier
-                    % case 'BrainSenseSurveysTimeDomain'
-                    % 
-                    %     % Loop over fields and check type of Survey
-                    %     for idx = 1:length(js.BrainSenseSurveysTimeDomain)
-                    %         if isfield(js.BrainSenseSurveysTimeDomain{idx}, 'ElectrodeSurvey')
-                    %             if ~isempty(vertcat(js.BrainSenseSurveysTimeDomain{idx}.ElectrodeSurvey.TimeDomainDatainMicroVolts))
-                    % 
-                    %                 % Folderset processing
-                    %                 if dataset == 2
-                    %                     savepath_survey = [savepath filesep 'Survey'];
-                    %                     if ~exist([savepath filesep 'Survey'], 'dir')
-                    %                        mkdir([savepath filesep 'Survey'])
-                    %                     end
-                    %                     dataSurvey = getSurvey(info, js, idx, [savepath filesep 'Survey'], savenameJSON);
-                    %                     if plotData
-                    %                         plotSurveys(dataSurvey, [savepath filesep 'Survey' filesep 'Figures'], savenameJSON, showFig);
-                    %                     end
-                    % 
-                    %                 % Single file and folder processing
-                    %                 else
-                    %                     dataSurvey = getSurvey(info, js, idx, savepath, savenameJSON);
-                    %                     if plotData
-                    %                         plotSurveys(dataSurvey, [savepath filesep 'Figures'], savenameJSON, showFig);
-                    %                     end
-                    %                 end
-                    % 
-                    %                 % Add number of runs to log
-                    %                 dataLog{i,'Survey_n_runs'} = dataSurvey.nRuns;
-                    %             end
-                    % 
-                    %         elseif isfield(js.BrainSenseSurveysTimeDomain{idx}, 'ElectrodeIdentifier')
-                    %             if ~isempty(vertcat(js.BrainSenseSurveysTimeDomain{idx}.ElectrodeIdentifier.TimeDomainDatainMicroVolts))
-                    % 
-                    %                 % Folderset processing
-                    %                 if dataset == 2
-                    %                     savepath_identifier = [savepath filesep 'Identifier'];
-                    %                     if ~exist([savepath filesep 'Identifier'], 'dir')
-                    %                        mkdir([savepath filesep 'Identifier'])
-                    %                     end
-                    %                     dataIdentifier = getIdentifier(info, js, idx, [savepath filesep 'Identifier'], savenameJSON);
-                    %                     if plotData
-                    %                         plotSurveys(dataIdentifier, [savepath filesep 'Identifier' filesep 'Figures'], savenameJSON, showFig);
-                    %                     end
-                    % 
-                    %                 % Single file and folder processing
-                    %                 else
-                    %                     dataIdentifier = getIdentifier(info, js, idx, savepath, savenameJSON);
-                    %                     if plotData
-                    %                         plotSurveys(dataIdentifier, [savepath filesep 'Figures'], savenameJSON, showFig);
-                    %                     end
-                    %                 end
-                    % 
-                    %                 % Add number of runs to log
-                    %                 dataLog{i,'Identifier_n_runs'} = dataIdentifier.nRuns;
-                    %             end
-                    %         end
-                    %     end
-                    % 
-                    % % Streaming
-                    % case 'BrainSenseTimeDomain'
-                    % 
-                    %     % Folderset processing
-                    %     if dataset == 2
-                    %         if ~exist([savepath filesep 'Streaming'], 'dir')
-                    %            mkdir([savepath filesep 'Streaming'])
-                    %         end
-                    %         dataStreaming = getStreaming(info, js, linenoise, ecgMethod, rWindow, [savepath filesep 'Streaming'], savenameJSON, plotData, showFig);
-                    % 
-                    %     % Single file and folder processing
-                    %     else
-                    %         dataStreaming = getStreaming(info, js, linenoise, ecgMethod, rWindow, savepath, savenameJSON, plotData, showFig);
-                    %     end
-                    % 
-                    %     % Add number of runs to log
-                    %     dataLog{i,'Streaming_n_runs'} = length(dataStreaming);
+                    % Setup
+                    case 'SenseChannelTests'
+
+                        % Folderset processing
+                        if dataset == 2
+                            savepath_setup = [savepath filesep 'Setup'];
+                            if ~exist([savepath filesep 'Setup'], 'dir')
+                               mkdir([savepath filesep 'Setup'])
+                            end
+                            dataSetup = getSetup(info, js, [savepath filesep 'Setup'], savenameJSON);
+                            if plotData
+                                plotSetup(dataSetup, [savepath filesep 'Setup' filesep 'Figures'], savenameJSON, showFig);
+                            end
+
+                        % Single file and folder processing
+                        else
+                            dataSetup = getSetup(info, js, savepath, savenameJSON);
+                            if plotData
+                                plotSetup(dataSetup, [savepath filesep 'Figures'], savenameJSON, showFig);
+                            end
+                        end
+
+                        % Add number of runs to log
+                        dataLog{i,'Setup_n_runs'} = dataSetup.nRuns;
+
+                    % Survey old format
+                    case 'LfpMontageTimeDomain'
+
+                        % Only if new format is not present
+                        if ~isfield(js, 'BrainSenseSurveysTimeDomain')
+
+                            % Folderset processing
+                            if dataset == 2
+                                if ~exist([savepath filesep 'Survey'], 'dir')
+                                   mkdir([savepath filesep 'Survey'])
+                                end
+                                dataSurvey = getSurvey(info, js, [], [savepath filesep 'Survey'], savenameJSON);
+                                if plotData
+                                    plotSurveys(dataSurvey, [savepath filesep 'Survey' filesep 'Figures'], savenameJSON, showFig);
+                                end
+
+                            % Single file and folder processing
+                            else
+                                dataSurvey = getSurvey(info, js, [], savepath, savenameJSON);
+                                if plotData
+                                    plotSurveys(dataSurvey, [savepath filesep 'Figures'], savenameJSON, showFig);
+                                end
+                            end
+
+                            % Add number of runs to log
+                            dataLog{i,'Survey_n_runs'} = dataSurvey.nRuns;
+                        end
+
+                    % Survey and Identifier
+                    case 'BrainSenseSurveysTimeDomain'
+
+                        % Loop over fields and check type of Survey
+                        for idx = 1:length(js.BrainSenseSurveysTimeDomain)
+                            if isfield(js.BrainSenseSurveysTimeDomain{idx}, 'ElectrodeSurvey')
+                                if ~isempty(vertcat(js.BrainSenseSurveysTimeDomain{idx}.ElectrodeSurvey.TimeDomainDatainMicroVolts))
+
+                                    % Folderset processing
+                                    if dataset == 2
+                                        savepath_survey = [savepath filesep 'Survey'];
+                                        if ~exist([savepath filesep 'Survey'], 'dir')
+                                           mkdir([savepath filesep 'Survey'])
+                                        end
+                                        dataSurvey = getSurvey(info, js, idx, [savepath filesep 'Survey'], savenameJSON);
+                                        if plotData
+                                            plotSurveys(dataSurvey, [savepath filesep 'Survey' filesep 'Figures'], savenameJSON, showFig);
+                                        end
+
+                                    % Single file and folder processing
+                                    else
+                                        dataSurvey = getSurvey(info, js, idx, savepath, savenameJSON);
+                                        if plotData
+                                            plotSurveys(dataSurvey, [savepath filesep 'Figures'], savenameJSON, showFig);
+                                        end
+                                    end
+
+                                    % Add number of runs to log
+                                    dataLog{i,'Survey_n_runs'} = dataSurvey.nRuns;
+                                end
+
+                            elseif isfield(js.BrainSenseSurveysTimeDomain{idx}, 'ElectrodeIdentifier')
+                                if ~isempty(vertcat(js.BrainSenseSurveysTimeDomain{idx}.ElectrodeIdentifier.TimeDomainDatainMicroVolts))
+
+                                    % Folderset processing
+                                    if dataset == 2
+                                        savepath_identifier = [savepath filesep 'Identifier'];
+                                        if ~exist([savepath filesep 'Identifier'], 'dir')
+                                           mkdir([savepath filesep 'Identifier'])
+                                        end
+                                        dataIdentifier = getIdentifier(info, js, idx, [savepath filesep 'Identifier'], savenameJSON);
+                                        if plotData
+                                            plotSurveys(dataIdentifier, [savepath filesep 'Identifier' filesep 'Figures'], savenameJSON, showFig);
+                                        end
+
+                                    % Single file and folder processing
+                                    else
+                                        dataIdentifier = getIdentifier(info, js, idx, savepath, savenameJSON);
+                                        if plotData
+                                            plotSurveys(dataIdentifier, [savepath filesep 'Figures'], savenameJSON, showFig);
+                                        end
+                                    end
+
+                                    % Add number of runs to log
+                                    dataLog{i,'Identifier_n_runs'} = dataIdentifier.nRuns;
+                                end
+                            end
+                        end
+
+                    % Streaming
+                    case 'BrainSenseTimeDomain'
+
+                        % Folderset processing
+                        if dataset == 2
+                            if ~exist([savepath filesep 'Streaming'], 'dir')
+                               mkdir([savepath filesep 'Streaming'])
+                            end
+                            dataStreaming = getStreaming(info, js, linenoise, ecgMethod, rWindow, [savepath filesep 'Streaming'], savenameJSON, plotData, showFig);
+
+                        % Single file and folder processing
+                        else
+                            dataStreaming = getStreaming(info, js, linenoise, ecgMethod, rWindow, savepath, savenameJSON, plotData, showFig);
+                        end
+
+                        % Add number of runs to log
+                        dataLog{i,'Streaming_n_runs'} = length(dataStreaming);
 
                     case 'DiagnosticData'
 
