@@ -13,7 +13,7 @@ This is an open research tool that is not intended for clinical purposes.
 https://github.com/Data-Driven-Brain-Stimulation/ALFA-toolbox
 
 ### Please cite this article when using our toolbox:
-Keulen BJ, Stam MJ, De Neeling MGJ, Hubers D, Boonstra JT, Van Wijk BCM, Swinnen BEKS, Beudel M. Amsterdam Local Field potential Analysis (ALFA) toolbox: an open source software package for deep brain stimulation research. Brain Stimulation. In Press 2026. https://doi.org/10.1016/j.brs.2026.103071.
+Keulen BJ, Stam MJ, De Neeling MGJ, Hubers D, Boonstra JT, Van Wijk BCM, Swinnen BEKS, Beudel M. Amsterdam Local Field potential Analysis (ALFA) toolbox: an open source software package for deep brain stimulation research. Brain Stimul. 2026;19(3):103071 2026. https://doi.org/10.1016/j.brs.2026.103071.
 
 ## Outline
 ### Main scripts
