@@ -32,8 +32,8 @@ function data = checkDuplicates(data, fieldsTL)
 
             % Go through data and check differences
             tdiff = diff(data.Data{:,'DateTime'});
-            idx_diff = logical([0; tdiff >= max_diff]);
-            data.Data = data.Data(idx_diff,:);
+            iDiff = logical([0; tdiff >= max_diff]);
+            data.Data = data.Data(iDiff,:);
 
         end
 
@@ -44,23 +44,44 @@ function data = checkDuplicates(data, fieldsTL)
 
         % Go through full data and check differences
         for e = 1:length(events)
+
+            % Get all events of the same type, split based on data or not
             eventData = data.Data(strcmp(data.Data{:,'EventName'}, events{e}),:);
-
-            eventAll = eventData(~cellfun(@isempty, eventData.Frequency),:);
-            diff_full = diff(eventAll.DateTime);
-            eventAll([false; diff_full < max_diff],:) = [];
-
+            eventFull = eventData(~cellfun(@isempty, eventData.Frequency),:);
             eventEmpty = eventData(cellfun(@isempty, eventData.Frequency),:);
-            for i = 1:height(eventEmpty)
-                if ~any((eventAll.DateTime - eventEmpty{i,'DateTime'}) < max_diff)
-                    eventAll = [eventAll; eventEmpty(i,:)];
+
+            % Delete absolute duplicates of events with data based on datetime
+            [~, iU, ~] = unique(eventFull(:,'DateTime'));
+            eventFull = eventFull(iU,:);
+
+            % Find indices of events with data less than 10 minutes apart and if
+            % PSD magnitude is equal, consider as duplicate and remove the latter
+            % NOTE: added 13-03-2026; after publication of user documentation
+            iDiff = (find(diff(eventFull.DateTime) < minutes(10)))+1;
+            for i = length(iDiff):-1:1
+                if isempty(eventFull{iDiff(i),'Magnitude'}{1})
+                    if isequal(eventFull{iDiff(i),'Magnitude'}{2},eventFull{iDiff(i)-1,'Magnitude'}{2})
+                        eventFull(iDiff(i),:) = [];
+                    end
+                else
+                    if isequal(eventFull{iDiff(i),'Magnitude'}{1},eventFull{iDiff(i)-1,'Magnitude'}{1})
+                        eventFull(iDiff(i),:) = [];
+                    end
                 end
             end
 
+            % Add empty events if more than 4 minutes apart from other events
+            for i = 1:height(eventEmpty)
+                if ~any((eventFull.DateTime - eventEmpty{i,'DateTime'}) < max_diff)
+                    eventFull = [eventFull; eventEmpty(i,:)];
+                end
+            end
+
+            % Create or add to table with all events
             if e == 1
-                allData = eventAll;
+                allData = eventFull;
             else
-                allData = [allData; eventAll];
+                allData = [allData; eventFull];
             end
         end
 
