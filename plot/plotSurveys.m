@@ -95,7 +95,7 @@ function plotSurveys(dataSurveys, savepath, savename, showFig)
                 box off
                 xlabel('Frequency [Hz]','FontSize', 12)
                 ylabel('PSD [\muV^{2}/Hz]','FontSize', 12)
-                title(sprintf('%s %ss', sides{m}, lower(modes{m})),'FontSize', 14)
+                title(sprintf('%s %ss', sides{s}, lower(modes{m})),'FontSize', 14)
                 legend(labels,'Interpreter','none','FontSize', 10)
                 legend('boxoff')
 
