@@ -38,6 +38,12 @@ function dataStruct = processAggregated(dataStruct, dataTL, fields, dataset, fil
 
     % Further processing Timeline data
     if strcmp(dataStruct.DataType, 'LFPTrendLogs')
+
+        % Sort info
+        [~, isort] = sort([dataStruct.Info.SessionStartDateUtc]);
+        dataStruct.Info = dataStruct.Info(isort);
+
+        % Process data
         dataStruct.Data = sortrows(struct2table(dataStruct.Data),'DateTime');     % Convert to table and sort on datetime       
         dataStruct = checkDuplicates(dataStruct, fields);                         % Remove duplicates
         dataStruct = addNaN(dataStruct);                                          % Insert NaN for missing values
