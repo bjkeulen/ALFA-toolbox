@@ -129,7 +129,7 @@ function dataStreaming = getStreaming(info, js, linenoise, ecgMethod, rTime, sav
             end
             smin=min(sl);
             lfp=[];
-            for xi = 1:length(xi)
+            for xi = 1:length(i) % bugfix "xi" to "i" MJS
                 lfp(xi,:) = TDdata(i(xi)).TimeDomainData(1:smin);
             end
             warning('Sample size differed between channels. Check session affiliation.')
