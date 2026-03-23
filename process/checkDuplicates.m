@@ -50,9 +50,11 @@ function data = checkDuplicates(data, fieldsTL)
             eventFull = eventData(~cellfun(@isempty, eventData.Frequency),:);
             eventEmpty = eventData(cellfun(@isempty, eventData.Frequency),:);
 
-            % Delete absolute duplicates of events with data based on datetime
-            [~, iU, ~] = unique(eventFull(:,'DateTime'));
-            eventFull = eventFull(iU,:);
+            % Delete absolute duplicates of events based on datetime
+            [~, iF, ~] = unique(eventFull(:,'DateTime'));
+            eventFull = eventFull(iF,:);
+            [~, iE, ~] = unique(eventEmpty(:,'DateTime'));
+            eventEmpty = eventEmpty(iE,:);
 
             % Find indices of events with data less than 10 minutes apart and if
             % PSD magnitude is equal, consider as duplicate and remove the latter
@@ -72,7 +74,7 @@ function data = checkDuplicates(data, fieldsTL)
 
             % Add empty events if more than 4 minutes apart from other events
             for i = 1:height(eventEmpty)
-                if ~any((eventFull.DateTime - eventEmpty{i,'DateTime'}) < max_diff)
+                if ~any(abs(eventFull.DateTime - eventEmpty{i,'DateTime'}) < max_diff)
                     eventFull = [eventFull; eventEmpty(i,:)];
                 end
             end
